@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Resume Analysis | CampusPlaceAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <h6 class="sidebar-title">Student</h6>
+
+  <a href="{% url 'student_dashboard' %}">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'student_profile' %}">
+    <i class="fa-solid fa-user"></i> View Profile
+  </a>
+
+  <a href="{% url 'student_correction_request' %}">
+    <i class="fa-solid fa-pen"></i> Correction Request
+  </a>
+
+  <a href="{% url 'student_resume_analysis' %}" class="active">
+    <i class="fa-solid fa-robot"></i> AI Resume Analysis
+  </a>
+
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+<!-- Main Content -->
+<main class="dashboard-content">
+
+<h4 class="fw-bold mb-4">
+  <i class="fa-solid fa-robot"></i> AI Resume Analysis
+</h4>
+
+<div class="stat-card mb-4">
+  <h6>Resume Status</h6>
+
+  {% if student.resume %}
+    <p class="mb-2">
+      Resume Uploaded
+      <a href="{{ student.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
+        View
+      </a>
+    </p>
+
+    <form method="post" action="{% url 'student_resume_analysis' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-brain"></i> Analyze Resume
+        </button>
+      </form>
+      
+  {% else %}
+    <p class="text-muted">
+      No resume uploaded. Please upload resume in profile.
+    </p>
+  {% endif %}
+</div>
+
+{% if student.resume_score != None %}
+<div class="row g-4">
+
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6>Resume Score</h6>
+      <p>{{ student.resume_score }} / 100</p>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6>Readiness Level</h6>
+      <p>{{ student.readiness }}</p>
+    </div>
+  </div>
+
+</div>
+{% endif %}
+{% if recommended_jobs %}
+<div class="stat-card mt-4">
+  <h6><i class="fa-solid fa-briefcase"></i> AI Recommended Jobs</h6>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Title</th>
+          <th>Location</th>
+          <th>Branch</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in recommended_jobs %}
+        <tr>
+          <td>{{ job.company_name }}</td>
+          <td>{{ job.title }}</td>
+          <td>{{ job.location }}</td>
+          <td>{{ job.branch }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+
+</main>
+</div>
+
+{% include "common/messages.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

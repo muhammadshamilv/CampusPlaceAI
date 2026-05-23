@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Institution Dashboard | CampusPlaceAI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h6 class="sidebar-title">Institution Admin</h6>
+
+    <a href="{% url 'college_dashboard' %}" class="active">
+      <i class="fa-solid fa-chart-pie"></i> Dashboard
+    </a>
+
+    <a href="{% url 'college_view_students' %}">
+      <i class="fa-solid fa-users"></i> View Students
+    </a>
+
+    <a href="{% url 'home' %}" class="logout">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="dashboard-content">
+    <h4 class="fw-bold mb-4">Institution Dashboard</h4>
+
+    <!-- Institution Info Card -->
+    <div class="stat-card mb-4">
+      <h5 class="fw-bold mb-3">
+        <i class="fa-solid fa-school text-primary"></i>
+        {{ institution.name }}
+      </h5>
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <small class="text-muted">Institution Email</small>
+          <p class="fw-semibold">{{ institution.email }}</p>
+        </div>
+
+        <div class="col-md-4">
+          <small class="text-muted">Status</small>
+          <p>
+            {% if institution.status == "approved" %}
+              <span class="badge bg-success">Approved</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="col-md-4">
+          <small class="text-muted">Institution Code</small>
+          <p class="fw-bold text-primary">
+            {{ institution.institution_code }}
+            <button class="btn btn-sm btn-outline-secondary ms-2"
+                    onclick="copyCode('{{ institution.institution_code }}')">
+              Copy
+            </button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>Total Students</h6>
+          <p>{{ total_students }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>Students with Resume</h6>
+          <p>{{ students_with_resume }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card">
+          <h6>Placement Drives</h6>
+          <p>{{ drives }}</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+{% include "common/messages.html" %}
+
+<script>
+function copyCode(code) {
+    navigator.clipboard.writeText(code);
+    alert("Institution code copied: " + code);
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>System Administrator Dashboard | CampusPlaceAI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h6 class="sidebar-title">System Admin</h6>
+
+  <a href="{% url 'company_dashboard' %}" class="active">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'company_college_requests' %}">
+    <i class="fa-solid fa-school"></i> Institution Requests
+  </a>
+
+  <a href="{% url 'company_add_student' %}">
+    <i class="fa-solid fa-user-plus"></i> Add Student
+  </a>
+
+  <a href="{% url 'company_manage_students' %}">
+    <i class="fa-solid fa-users"></i> Manage Students
+  </a>
+
+  <!-- Job Management -->
+  <a href="{% url 'company_post_job' %}">
+    <i class="fa-solid fa-plus"></i> Post Job
+  </a>
+
+  <a href="{% url 'company_view_jobs' %}">
+    <i class="fa-solid fa-clipboard-list"></i> View Jobs
+  </a>
+  <a href="{% url 'company_selected_students' %}">
+    <i class="fa-solid fa-user-check"></i> Selected Students
+  </a>
+  
+
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="dashboard-content">
+
+  <!-- Header + Correction Button -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">Dashboard Overview</h4>
+
+    <!-- Correction Requests Button -->
+    <button class="btn btn-warning position-relative"
+            data-bs-toggle="modal"
+            data-bs-target="#correctionModal">
+      <i class="fa-solid fa-pen-to-square"></i> Correction Requests
+
+      {% if correction_count > 0 %}
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ correction_count }}
+      </span>
+      {% endif %}
+    </button>
+  </div>
+
+
+  <!-- Stats -->
+  <div class="row g-4">
+
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card">
+        <h6>Total Institutions</h6>
+        <p>{{ total_institutions }}</p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card">
+        <h6>Total Students</h6>
+        <p>{{ total_students }}</p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card">
+        <h6>Total Jobs</h6>
+        <p>{{ total_jobs }}</p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+      <div class="stat-card">
+        <h6>Pending Requests</h6>
+        <p>{{ pending_requests }}</p>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+</div>
+
+{% include "common/messages.html" %}
+
+
+<!-- ============================= -->
+<!-- Correction Requests Modal -->
+<!-- ============================= -->
+<div class="modal fade" id="correctionModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-pen"></i> Student Correction Requests
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="table-responsive">
+        <table class="table align-middle">
+        <thead>
+        <tr>
+          <th>Student</th>
+          <th>Institution</th>
+          <th>Field</th>
+          <th>Requested Value</th>
+          <th>Message</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for c in corrections %}
+        <tr>
+          <td class="fw-semibold">{{ c.student.full_name }}</td>
+          <td>{{ c.student.institution.name }}</td>
+          <td>{{ c.field }}</td>
+          <td>{{ c.correct_value }}</td>
+          <td>{{ c.message }}</td>
+          <td>
+            <a href="{% url 'company_view_student' c.student.id %}"
+               class="btn btn-sm btn-primary">
+              <i class="fa fa-edit"></i> Edit
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">
+            No correction requests
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
+        </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

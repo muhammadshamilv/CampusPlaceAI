@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View Jobs | CampusPlaceAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h6 class="sidebar-title">System Admin</h6>
+
+  <a href="{% url 'company_dashboard' %}">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'company_college_requests' %}">
+    <i class="fa-solid fa-school"></i> Institution Requests
+  </a>
+
+  <a href="{% url 'company_add_student' %}">
+    <i class="fa-solid fa-user-plus"></i> Add Student
+  </a>
+
+  <a href="{% url 'company_manage_students' %}">
+    <i class="fa-solid fa-users"></i> Manage Students
+  </a>
+
+  <a href="{% url 'company_post_job' %}">
+    <i class="fa-solid fa-plus"></i> Post Job
+  </a>
+
+  <a href="{% url 'company_view_jobs' %}" class="active">
+    <i class="fa-solid fa-clipboard-list"></i> View Jobs
+  </a>
+
+  <a href="{% url 'company_selected_students' %}">
+    <i class="fa-solid fa-user-check"></i> Selected Students
+  </a>
+
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="dashboard-content">
+
+<h4 class="fw-bold mb-4">All Job Postings</h4>
+
+<div class="stat-card">
+<div class="table-responsive">
+
+<table class="table align-middle">
+<thead>
+<tr>
+  <th>Company</th>
+  <th>Title</th>
+  <th>Location</th>
+  <th>Branch</th>
+  <th>Status</th>
+  <th>Posted</th>
+  <th>View</th>
+  <th>Match</th>
+  <th>Delete</th>
+</tr>
+</thead>
+
+<tbody>
+{% for job in jobs %}
+<tr>
+  <td>{{ job.company_name }}</td>
+  <td class="fw-semibold">{{ job.title }}</td>
+  <td>{{ job.location }}</td>
+  <td>{{ job.branch }}</td>
+  <td>
+    {% if job.status == "Open" %}
+      <span class="badge bg-success">Open</span>
+    {% else %}
+      <span class="badge bg-secondary">Closed</span>
+    {% endif %}
+  </td>
+  <td>{{ job.created_at|date:"d M Y" }}</td>
+
+  <!-- View Button -->
+  <td>
+    <button class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#jobModal"
+            onclick="showJobDetails(
+                '{{ job.company_name|escapejs }}',
+                '{{ job.title|escapejs }}',
+                '{{ job.location|escapejs }}',
+                '{{ job.branch|escapejs }}',
+                '{{ job.eligibility|escapejs }}',
+                `{{ job.description|escapejs }}`
+            )">
+      <i class="fa-solid fa-eye"></i>
+    </button>
+
+
+  </td>
+
+  <!-- Match Button -->
+  <td>
+    {% if job.status == "Open" %}
+      <a href="{% url 'company_match_students' job.id %}"
+         class="btn btn-sm btn-success">
+        <i class="fa-solid fa-users"></i>
+      </a>
+    {% else %}
+      <button class="btn btn-sm btn-secondary" disabled>
+        <i class="fa-solid fa-users"></i>
+      </button>
+    {% endif %}
+  </td>
+
+  <td>
+    <form method="post" action="{% url 'delete_job' job.id %}">
+    {% csrf_token %}
+    <button class="btn btn-sm btn-outline-danger">
+    <i class="fa-solid fa-trash"></i>
+    </button>
+    </form>
+    </td>
+
+</tr>
+{% empty %}
+<tr>
+  <td colspan="8" class="text-center text-muted">
+    No jobs posted yet
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+</main>
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Job Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Company:</strong> <span id="modalCompany"></span></p>
+        <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+        <p><strong>Branch:</strong> <span id="modalBranch"></span></p>
+        <p><strong>Eligibility:</strong> <span id="modalEligibility"></span></p>
+
+        <hr>
+
+        <h6 class="fw-bold">Job Description</h6>
+        <p id="modalDescription" style="white-space: pre-line;"></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% include "common/messages.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function showJobDetails(company, title, location, branch, eligibility, description) {
+    document.getElementById("modalTitle").innerText = title;
+    document.getElementById("modalCompany").innerText = company;
+    document.getElementById("modalLocation").innerText = location;
+    document.getElementById("modalBranch").innerText = branch;
+    document.getElementById("modalEligibility").innerText = eligibility;
+    document.getElementById("modalDescription").innerText = description;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Students | CampusPlaceAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h6 class="sidebar-title">System Admin</h6>
+
+  <a href="{% url 'company_dashboard' %}">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'company_college_requests' %}">
+    <i class="fa-solid fa-school"></i> Institution Requests
+  </a>
+
+  <a href="{% url 'company_add_student' %}">
+    <i class="fa-solid fa-user-plus"></i> Add Student
+  </a>
+
+  <a href="{% url 'company_manage_students' %}" class="active">
+    <i class="fa-solid fa-users"></i> Manage Students
+  </a>
+
+  <!-- Job Management -->
+  <a href="{% url 'company_post_job' %}">
+    <i class="fa-solid fa-plus"></i> Post Job
+  </a>
+
+  <a href="{% url 'company_view_jobs' %}">
+    <i class="fa-solid fa-clipboard-list"></i> View Jobs
+  </a>
+
+  <a href="{% url 'company_selected_students' %}">
+    <i class="fa-solid fa-user-check"></i> Selected Students
+  </a>
+  
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+
+<!-- Content -->
+<main class="dashboard-content">
+
+<h4 class="fw-bold mb-4">Manage Students</h4>
+
+<div class="stat-card">
+<div class="table-responsive">
+
+<table class="table align-middle">
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Email</th>
+  <th>Institution</th>
+  <th>Resume</th>
+  <th>Action</th>
+  <th>Delete</th>
+</tr>
+</thead>
+
+<tbody>
+{% for student in students %}
+<tr>
+  <td class="fw-semibold">{{ student.full_name }}</td>
+  <td>{{ student.email }}</td>
+  <td>{{ student.institution.name }}</td>
+
+  <td>
+    {% if student.resume %}
+      <span class="badge bg-success">Uploaded</span>
+    {% else %}
+      <span class="badge bg-secondary">Not Uploaded</span>
+    {% endif %}
+  </td>
+
+  <td>
+    <a href="{% url 'company_view_student' student.id %}" 
+       class="btn btn-sm btn-outline-primary">
+      <i class="fa-solid fa-eye"></i>
+    </a>
+  </td>
+<td>
+  <form method="post" action="{% url 'delete_student' student.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button class="btn btn-sm btn-outline-danger">
+    <i class="fa-solid fa-trash"></i>
+    </button>
+    </form>
+  </td>
+
+</tr>
+{% empty %}
+<tr>
+  <td colspan="5" class="text-center text-muted">
+    No students found
+  </td>
+
+  
+
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

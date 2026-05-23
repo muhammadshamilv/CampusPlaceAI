@@ -1,0 +1,38 @@
+/* FORM SECTION */
+.form-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fbff, #eef3ff);
+  }
+  
+  /* FORM CARD */
+  .form-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-card h4 {
+    color: #1e293b;
+  }
+
+  /* WIDE FORM CARD (DASHBOARD FORMS) */
+.form-card-wide {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  
+  /* INPUTS */
+  .form-control {
+    border-radius: 10px;
+    padding: 10px;
+  }
+  
+  /* BUTTON */
+  .btn-primary {
+    border-radius: 10px;
+  }
+  

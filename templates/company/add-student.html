@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Student | CampusPlaceAI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h6 class="sidebar-title">System Admin</h6>
+
+  <a href="{% url 'company_dashboard' %}">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'company_college_requests' %}">
+    <i class="fa-solid fa-school"></i> Institution Requests
+  </a>
+
+  <a href="{% url 'company_add_student' %}" class="active">
+    <i class="fa-solid fa-user-plus"></i> Add Student
+  </a>
+
+  <a href="{% url 'company_manage_students' %}">
+    <i class="fa-solid fa-users"></i> Manage Students
+  </a>
+
+  <!-- Job Management -->
+  <a href="{% url 'company_post_job' %}">
+    <i class="fa-solid fa-plus"></i> Post Job
+  </a>
+
+  <a href="{% url 'company_view_jobs' %}">
+    <i class="fa-solid fa-clipboard-list"></i> View Jobs
+  </a>
+
+  <a href="{% url 'company_selected_students' %}">
+    <i class="fa-solid fa-user-check"></i> Selected Students
+  </a>
+  
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+
+<main class="dashboard-content">
+  <h4 class="fw-bold mb-4">Add Student</h4>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <div class="form-card form-card-wide">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label>Full Name</label>
+          <input type="text" name="full_name" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label>Institution Code</label>
+          <input type="text" name="institution_code" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+          <label>Phone</label>
+          <input type="text" name="phone" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label>Date of Birth</label>
+          <input type="date" name="dob" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+          <label>Gender</label>
+          <select name="gender" class="form-control">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label>Qualification</label>
+          <input type="text" name="qualification" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label>CGPA</label>
+          <input type="text" name="cgpa" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label>Backlogs</label>
+          <input type="number" name="backlogs" class="form-control" required>
+        </div>
+
+        <div class="col-md-12">
+          <label>Skills</label>
+          <textarea name="skills" class="form-control"
+            placeholder="Example: Python, Django, SQL"></textarea>
+        </div>
+
+        <div class="col-md-12">
+          <label>Courses</label>
+          <textarea name="courses" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-12">
+          <label>Internship / Experience</label>
+          <textarea name="internship" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-12">
+          <label>Resume</label>
+          <input type="file" name="resume" class="form-control">
+        </div>
+
+      </div>
+
+      <div class="mt-4 text-end">
+        <button class="btn btn-primary">Add Student</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+</div>
+</body>
+</html>

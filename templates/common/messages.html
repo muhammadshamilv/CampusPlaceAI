@@ -1,0 +1,143 @@
+<!-- 🔔 Universal Message Bell -->
+<div class="student-message-wrapper">
+    <div id="msgBell" class="msg-bell">
+      <i class="fa-solid fa-bell"></i>
+      <span id="msgCount" class="msg-count">0</span>
+    </div>
+  
+    <div id="msgOverlay" class="msg-overlay" onclick="toggleMsg()"></div>
+  
+    <div id="msgBox" class="msg-box-center">
+      <div class="msg-header">
+        <h5>Messages</h5>
+        <button onclick="toggleMsg()">✖</button>
+      </div>
+      <div id="msgList"></div>
+    </div>
+  </div>
+  
+  <style>
+  .msg-bell{
+    position: fixed;
+    top:15px;
+    right:25px;
+    cursor:pointer;
+    z-index:999;
+    font-size:22px;
+  }
+  .msg-count{
+    background:red;
+    color:#fff;
+    font-size:11px;
+    padding:2px 6px;
+    border-radius:50%;
+    position:absolute;
+    top:-8px;
+    right:-8px;
+  }
+  
+  .msg-overlay{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    z-index:998;
+  }
+  
+  .msg-box-center{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:450px;
+    max-height:70vh;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+    display:none;
+    z-index:999;
+    padding:15px;
+    overflow-y:auto;
+  }
+  
+  .msg-header{
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid #ddd;
+    margin-bottom:10px;
+  }
+  
+  .msg-item{
+    border-bottom:1px solid #eee;
+    padding:10px 5px;
+  }
+  .msg-item.unread{font-weight:bold;}
+  .msg-item small{display:block;color:#777;}
+  .msg-actions{
+    margin-top:5px;
+  }
+  .msg-actions button{
+    border:none;
+    background:none;
+    cursor:pointer;
+    margin-right:10px;
+    font-size:16px;
+  }
+  </style>
+  
+  <script>
+  function toggleMsg(){
+    const box=document.getElementById("msgBox");
+    const overlay=document.getElementById("msgOverlay");
+  
+    if(box.style.display==="block"){
+      box.style.display="none";
+      overlay.style.display="none";
+    }else{
+      box.style.display="block";
+      overlay.style.display="block";
+      loadMessages();
+    }
+  }
+  
+  document.getElementById("msgBell").onclick=toggleMsg;
+  
+  function loadMessages(){
+    fetch("/core/messages/")
+    .then(r=>r.json())
+    .then(data=>{
+      let html="",unread=0;
+  
+      if(data.length===0){
+        html="<p class='text-muted text-center'>No messages</p>";
+      }
+  
+      data.forEach(m=>{
+        if(!m.is_read) unread++;
+        html+=`
+        <div class="msg-item ${m.is_read?'':'unread'}">
+          <b>${m.title}</b>
+          <small>${m.message}</small>
+          <small>${m.created_at}</small>
+          <div class="msg-actions">
+            <button onclick="readMsg(${m.id})">✔</button>
+            <button onclick="delMsg(${m.id})">🗑</button>
+          </div>
+        </div>`;
+      });
+  
+      document.getElementById("msgList").innerHTML=html;
+      document.getElementById("msgCount").innerText=unread;
+    });
+  }
+  
+  function readMsg(id){
+    fetch(`/core/messages/read/${id}/`).then(()=>loadMessages());
+  }
+  function delMsg(id){
+    fetch(`/core/messages/delete/${id}/`).then(()=>loadMessages());
+  }
+  </script>
+  

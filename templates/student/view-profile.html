@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile | CampusPlaceAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+      CampusPlace<span>AI</span>
+    </a>
+  </div>
+</nav>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+  <h6 class="sidebar-title">Student</h6>
+
+  <a href="{% url 'student_dashboard' %}">
+    <i class="fa-solid fa-chart-pie"></i> Dashboard
+  </a>
+
+  <a href="{% url 'student_profile' %}" class="active">
+    <i class="fa-solid fa-user"></i> View Profile
+  </a>
+
+  <a href="{% url 'student_correction_request' %}">
+    <i class="fa-solid fa-pen"></i> Correction Request
+  </a>
+
+  <a href="{% url 'student_resume_analysis' %}">
+    <i class="fa-solid fa-robot"></i> AI Resume Analysis
+  </a>
+  
+
+  <a href="{% url 'home' %}" class="logout">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+  </a>
+</aside>
+
+<main class="dashboard-content">
+
+<h4 class="fw-bold mb-4">My Profile</h4>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Name</h6>
+    <p>{{ student.full_name }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Email</h6>
+    <p>{{ student.email }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Phone</h6>
+    <p>{{ student.phone }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Institution</h6>
+    <p>{{ student.institution.name }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Qualification</h6>
+    <p>{{ student.qualification }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>CGPA</h6>
+    <p>{{ student.cgpa }}</p>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="stat-card">
+    <h6>Backlogs</h6>
+    <p>{{ student.backlogs }}</p>
+  </div>
+</div>
+
+<div class="col-md-12">
+  <div class="stat-card">
+    <h6>Skills</h6>
+    <p>{{ student.skills|default:"—" }}</p>
+  </div>
+</div>
+
+<div class="col-md-12">
+  <div class="stat-card">
+    <h6>Courses</h6>
+    <p>{{ student.courses|default:"—" }}</p>
+  </div>
+</div>
+
+<div class="col-md-12">
+  <div class="stat-card">
+    <h6>Internship / Experience</h6>
+    <p>{{ student.internship|default:"—" }}</p>
+  </div>
+</div>
+
+<div class="col-md-12">
+  <div class="stat-card">
+    <h6>Resume</h6>
+    {% if student.resume %}
+      <a href="{{ student.resume.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+        <i class="fa-solid fa-file-pdf"></i> View Resume
+      </a>
+    {% else %}
+      <p class="text-muted">No resume uploaded</p>
+    {% endif %}
+  </div>
+</div>
+
+</div>
+
+</main>
+</div>
+
+{% include "common/messages.html" %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
