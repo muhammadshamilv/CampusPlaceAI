@@ -108,13 +108,14 @@
             data-bs-toggle="modal"
             data-bs-target="#jobModal"
             onclick="showJobDetails(
-                '{{ job.company_name|escapejs }}',
-                '{{ job.title|escapejs }}',
-                '{{ job.location|escapejs }}',
-                '{{ job.branch|escapejs }}',
-                '{{ job.eligibility|escapejs }}',
-                `{{ job.description|escapejs }}`
-            )">
+              '{{ job.company_name|escapejs }}',
+              '{{ job.title|escapejs }}',
+              '{{ job.location|escapejs }}',
+              '{{ job.branch|escapejs }}',
+              '{{ job.eligibility|escapejs }}',
+              '{{ job.required_skills|escapejs }}',
+              `{{ job.description|escapejs }}`
+          )">
       <i class="fa-solid fa-eye"></i>
     </button>
 
@@ -178,6 +179,11 @@
         <p><strong>Branch:</strong> <span id="modalBranch"></span></p>
         <p><strong>Eligibility:</strong> <span id="modalEligibility"></span></p>
 
+        <p>
+          <strong>Required Skills:</strong>
+          <span id="modalSkills"></span>
+        </p>
+        
         <hr>
 
         <h6 class="fw-bold">Job Description</h6>
@@ -193,12 +199,21 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function showJobDetails(company, title, location, branch, eligibility, description) {
+  function showJobDetails(
+    company,
+    title,
+    location,
+    branch,
+    eligibility,
+    skills,
+    description
+) {
     document.getElementById("modalTitle").innerText = title;
     document.getElementById("modalCompany").innerText = company;
     document.getElementById("modalLocation").innerText = location;
     document.getElementById("modalBranch").innerText = branch;
     document.getElementById("modalEligibility").innerText = eligibility;
+    document.getElementById("modalSkills").innerText = skills;
     document.getElementById("modalDescription").innerText = description;
 }
 </script>

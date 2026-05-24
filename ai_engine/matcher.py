@@ -56,6 +56,35 @@ def skill_match_score(student_skills, job_skills):
     return min(matches * 10, 40)
 
 
+def branch_match(student_qualification, job_branch):
+
+    qualification = student_qualification.lower()
+
+    branch_keywords = {
+        "cse": ["computer science", "cse"],
+        "it": ["information technology", "it"],
+        "ece": ["electronics", "ece"],
+        "me": ["mechanical", "me"],
+        "ce": ["civil", "ce"]
+    }
+
+    job_branches = [
+        b.strip().lower()
+        for b in job_branch.split(",")
+    ]
+
+    for branch in job_branches:
+
+        if branch in branch_keywords:
+
+            for keyword in branch_keywords[branch]:
+
+                if keyword in qualification:
+                    return True
+
+    return False
+
+
 # -----------------------------------------
 # FINAL MATCH SCORE
 # -----------------------------------------
@@ -63,19 +92,38 @@ def calculate_match_score(student, job):
 
     score = 0
 
-    # Branch Match (Strict filter weight)
-    if job.branch.lower() in student.qualification.lower():
+    # --------------------------------
+    # Branch Match (Mandatory)
+    # --------------------------------
+    if branch_match(
+        student.qualification,
+        job.branch
+    ):
         score += 20
     else:
-        return 0   # ❗ STRICT FILTER (Very Important)
+        return 0
 
+    # --------------------------------
+    # Skill Match (Mandatory)
+    # --------------------------------
+    skill_score = skill_match_score(
+        student.skills,
+        job.required_skills
+    )
+
+    if skill_score == 0:
+        return 0
+
+    score += skill_score
+
+    # --------------------------------
     # CGPA Score
+    # --------------------------------
     score += cgpa_score(student.cgpa)
 
-    # Skill Score
-    score += skill_match_score(student.skills, job.required_skills)
-
+    # --------------------------------
     # Readiness Score
+    # --------------------------------
     score += readiness_score(student.readiness)
 
     return score
